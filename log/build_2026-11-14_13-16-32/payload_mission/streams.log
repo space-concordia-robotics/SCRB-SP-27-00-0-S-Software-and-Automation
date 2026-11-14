@@ -1,0 +1,28 @@
+[0.983s] Invoking command in '/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/build --no-deps symlink_data
+[1.238s] running develop
+[1.404s] running egg_info
+[1.404s] creating payload_mission.egg-info
+[1.420s] writing payload_mission.egg-info/PKG-INFO
+[1.420s] writing dependency_links to payload_mission.egg-info/dependency_links.txt
+[1.420s] writing entry points to payload_mission.egg-info/entry_points.txt
+[1.420s] writing requirements to payload_mission.egg-info/requires.txt
+[1.420s] writing top-level names to payload_mission.egg-info/top_level.txt
+[1.421s] writing manifest file 'payload_mission.egg-info/SOURCES.txt'
+[1.453s] reading manifest file 'payload_mission.egg-info/SOURCES.txt'
+[1.453s] writing manifest file 'payload_mission.egg-info/SOURCES.txt'
+[1.470s] running build_ext
+[1.471s] Creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/lib/python3.12/site-packages/payload-mission.egg-link (link to .)
+[1.471s] Installing mission_node_urc script to /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/lib/payload_mission
+[1.471s] 
+[1.471s] Installed /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission
+[1.471s] running symlink_data
+[1.471s] creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/ament_index
+[1.472s] creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/ament_index/resource_index
+[1.472s] creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/ament_index/resource_index/packages
+[1.472s] symbolically linking /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/resource/payload_mission -> /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/ament_index/resource_index/packages
+[1.472s] symbolically linking /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/package.xml -> /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission
+[1.472s] creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission/missions
+[1.472s] symbolically linking /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/missions/urc_take_deep_sample.json -> /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission/missions
+[1.472s] creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission/config
+[1.472s] symbolically linking /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/config/payload_description.urdf -> /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission/config
+[1.510s] Invoked command in '/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/build --no-deps symlink_data

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpayload_can_core.a CMakeFiles/payload_can_core.dir/src/can_core.cpp.o CMakeFiles/payload_can_core.dir/src/socketcan.cpp.o
+/usr/bin/ranlib libpayload_can_core.a

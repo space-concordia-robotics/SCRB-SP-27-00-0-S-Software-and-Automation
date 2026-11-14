@@ -1,0 +1,9 @@
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/uninstall.dir
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/payload_bringup_uninstall.dir
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/test.dir
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/edit_cache.dir
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/rebuild_cache.dir
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/list_install_components.dir
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/install.dir
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/install/local.dir
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_bringup/CMakeFiles/install/strip.dir

@@ -1,0 +1,239 @@
+# can_signals.yaml  -- the reviewed bridge between CAN_Table.xlsx and ros2_control.
+#
+# CAN_Table.xlsx says WHICH messages exist (id, direction, size, rate, bit mask).
+# This file says WHAT each bit means (named fields) and how each field maps to a ros2_control interface (scale/offset, tolerance, trigger semantics).
+# scripts/generate_can_table.py cross-checks the two and emits C++/JSON.
+#
+# Conventions
+#   * value_in_ros_units = raw * scale + offset           (telemetry -> state interface)
+#   * raw_to_send        = round(ros_value * scale + offset)   (command interface -> frame)
+#   * bit numbering: "bit 0" = FIRST bit of the 57-bit payload (the MSB side); a multi-bit
+#     field "bits a-b" is an integer whose MOST significant bit is bit a.  (ASSUMPTION A3)
+#   * scale/offset may be Python expressions using:  pi, abs, mimic("joint") (m per rad,
+#     read from the URDF), limit("joint","lower"|"upper").  That is how the URDF feeds the CAN layer.
+
+frame:
+  # 29-bit extended identifier = device_type(5) | api_class(6) | reserved_one(1) | api_index(7) | device_id(10)
+  id_fields: {device_type: 0, api_class: 0, reserved_one: 1, api_index: 0, device_id: 0}
+  id_widths: {device_type: 5, api_class: 6, reserved_one: 1, api_index: 7, device_id: 10}
+  # data field (8 bytes) = destination(1) | message_id(6) | payload(57)         (ASSUMPTION A1/A2)
+  destination: {jetson: 1, payload: 0}
+
+# Messages.  key = message id from the sheet (last 6 bits of the header string).
+# competitions: which competition uses it ("urc", "erc"), used for NaN/strict handling.
+messages:
+  0:  {name: KILL, dir: command, competitions: [urc, erc], signals: [{name: kill, bit: 0, width: 1}]}
+
+  1:  {name: TELEM_URC_GENERAL, dir: telemetry, competitions: [urc], signals: [
+        {name: distance_from_ground, bit: 0,  width: 10},     # mm, 0-1000
+        {name: vps_displacement,     bit: 10, width: 10}]}    # mm, 0-1000
+  2:  {name: TELEM_URC_ANALYZE, dir: telemetry, competitions: [urc], signals: [
+        {name: vps_rpm,        bit: 0,  width: 8},
+        {name: sas_angle,      bit: 8,  width: 9},            # deg 0-300
+        {name: pump1_status,   bit: 17, width: 1},
+        {name: pump2_status,   bit: 18, width: 1},
+        {name: solenoid1,      bit: 19, width: 1},
+        {name: solenoid2,      bit: 20, width: 1},
+        {name: ultrasonic,     bit: 21, width: 1},
+        {name: lid_servo,      bit: 22, width: 1},
+        {name: carousel_pos,   bit: 23, width: 4},            # sheet says 0-12 (13 values) but 4 bits; see report
+        {name: led_405,        bit: 27, width: 1},
+        {name: led_445,        bit: 28, width: 1},
+        {name: current_mission, bit: 29, width: 3},
+        {name: photodiode,     bit: 32, width: 16}]}
+  3:  {name: TELEM_URC_DEEP_SAMPLE, dir: telemetry, competitions: [urc], signals: [
+        {name: vps_rpm,          bit: 0,  width: 8},
+        {name: drill_disp,       bit: 8,  width: 7},          # mm, 0-120 (7 bits => max 127)
+        {name: drill_vert_rpm,   bit: 15, width: 8},
+        {name: drill_rot_rpm,    bit: 23, width: 7},          # 0-100 rpm
+        {name: plug_state,       bit: 30, width: 1}]}
+  4:  {name: TELEM_ERC_DRILL, dir: telemetry, competitions: [erc], signals: [
+        {name: drill_dist,       bit: 0,  width: 11},         # mm 0-1200
+        {name: drill_vert_rpm,   bit: 11, width: 8},
+        {name: drill_rot_rpm,    bit: 19, width: 7},
+        {name: load_cell_mass,   bit: 26, width: 14},         # g 0-10000
+        {name: deflector_state,  bit: 40, width: 1}]}
+  5:  {name: TELEM_ERC_ROCK, dir: telemetry, competitions: [erc], signals: [
+        {name: rock_mass,        bit: 0,  width: 14}]}        # sheet unit "dg" (decigram?)  see report
+  6:  {name: TELEM_ERC_SOIL, dir: telemetry, competitions: [erc], signals: [
+        {name: soil_mass,        bit: 0,  width: 14},         # dg
+        {name: temperature,      bit: 14, width: 10},         # deg C
+        {name: servo_state,      bit: 24, width: 1}]}
+  7:  {name: TELEM_ERC_SPOOL, dir: telemetry, competitions: [erc], signals: [
+        {name: spool_angle,      bit: 0,  width: 16},         # deg accumulated
+        {name: spool_rpm,        bit: 16, width: 10}]}
+  8:  {name: TELEM_ERC_SPOOL_POS, dir: telemetry, competitions: [erc], signals: [
+        {name: spool_angle_now,  bit: 0,  width: 16}]}
+
+  9:  {name: VPS_HOME, dir: command, competitions: [urc], signals: [{name: home, bit: 0, width: 1}]}
+  10: {name: VPS_MOVE, dir: command, competitions: [urc], signals: [{name: target_displacement, bit: 0, width: 10, max: 1000}]}
+  11: {name: SAS_HOME, dir: command, competitions: [urc], signals: [{name: home, bit: 0, width: 1}]}
+  12: {name: SSS_POSITION, dir: command, competitions: [urc], signals: [{name: target_angle, bit: 0, width: 9, max: 300}]}
+  13: {name: URC_PUMP_RUN, dir: command, competitions: [urc], signals: [
+        {name: selector, bit: 0, width: 1},
+        {name: power,    bit: 1, width: 16, signed: true, min: -20000, max: 20000}]}
+  14: {name: ULTRASONIC_RUN, dir: command, competitions: [urc], signals: [{name: "on", bit: 0, width: 1}]}
+  15: {name: CAROUSEL_POSITION, dir: command, competitions: [urc], signals: [{name: cuvette, bit: 0, width: 4, max: 11}]}
+  16: {name: LED_SET, dir: command, competitions: [urc], signals: [
+        {name: selector, bit: 0, width: 1},
+        {name: "on",       bit: 1, width: 1}]}
+  17: {name: URC_DSS_DRILL_SET, dir: command, competitions: [urc], signals: [{name: rpm, bit: 0, width: 11, max: 1200}]}
+  18: {name: URC_DSS_HOME, dir: command, competitions: [urc], signals: [{name: home, bit: 0, width: 1}]}
+  19: {name: URC_DSS_MOVE, dir: command, competitions: [urc], signals: [{name: target_displacement, bit: 0, width: 8, max: 200}]}
+  20: {name: URC_DSS_PLUG_SET, dir: command, competitions: [urc], signals: [{name: angle, bit: 0, width: 9, max: 300}]}
+  21: {name: ERC_DSS_LOAD_CELL_0, dir: command, competitions: [erc], signals: [{name: zero, bit: 0, width: 1}]}
+  22: {name: ERC_DSS_DRILL_SET, dir: command, competitions: [erc], signals: [{name: rpm, bit: 0, width: 11, max: 1200}]}
+  23: {name: ERC_DSS_MOVE, dir: command, competitions: [erc], signals: [{name: target_displacement, bit: 0, width: 10, max: 750}]}
+  24: {name: ERC_DSS_DEFLECTOR_SET, dir: command, competitions: [erc], signals: [{name: angle, bit: 0, width: 9, max: 360}]}
+  25: {name: ERC_DSS_PLUG_SET, dir: command, competitions: [erc], signals: [{name: angle, bit: 0, width: 9, max: 360}]}
+  26: {name: ROCK_ZERO_LOAD, dir: command, competitions: [erc], signals: [{name: zero, bit: 0, width: 1}]}
+  27: {name: SOIL_ZERO_LOAD, dir: command, competitions: [erc], signals: [{name: zero, bit: 0, width: 1}]}
+  28: {name: SOIL_SIMPLE_CLOSE, dir: command, competitions: [erc], signals: [
+        {name: revolutions, bit: 0, width: 4, max: 10},
+        {name: speed_rpm,   bit: 4, width: 11, max: 1200}]}
+  29: {name: SOIL_JAWS_SET, dir: command, competitions: [erc], signals: [{name: target, bit: 0, width: 11, max: 1200}]}
+  30: {name: SOIL_JAWS_HOME, dir: command, competitions: [erc], signals: [{name: home, bit: 0, width: 1}]}
+  31: {name: SOIL_HEAT_TO_TARGET, dir: command, competitions: [erc], signals: [{name: target_temp, bit: 0, width: 10, max: 600}]}
+  32: {name: SPOOL_ZERO, dir: command, competitions: [erc], signals: [{name: zero, bit: 0, width: 1}]}
+  33: {name: ERC_PUMP_RUN, dir: command, competitions: [erc], signals: [
+        {name: power, bit: 0, width: 16, signed: true, min: -20000, max: 20000}]}
+  34: {name: SPOOL_MOVE, dir: command, competitions: [erc], signals: [{name: angle, bit: 0, width: 11, max: 2000}]}
+  35: {name: SPOOL_ROTATE, dir: command, competitions: [erc], signals: [
+        {name: speed_rpm,   bit: 0,  width: 11, max: 1200},
+        {name: duration_ds, bit: 11, width: 7,  max: 100}]}
+  36: {name: SET_MISSION, dir: command, competitions: [urc, erc], signals: [{name: mission, bit: 0, width: 3}]}
+  37: {name: CONFIGURATION, dir: telemetry, competitions: [urc, erc], signals: []}      # 1 Hz, no payload: used as liveness
+  38: {name: ERROR_A, dir: telemetry, competitions: [urc, erc], signals: []}            # sheet marks header "ERROR"; undefined
+  39: {name: ERROR_B, dir: telemetry, competitions: [urc, erc], signals: []}
+
+# STATE bindings: telemetry signal -> state interface.
+state_bindings:
+  # ---- joints (from the URDF) ----
+  # ASSUMPTION A4: table "displacement" == URDF prismatic translation (VPS) / minus translation (drill, down is negative)
+  - {interface: vps_screw_rotation/position,        signal: TELEM_URC_GENERAL.vps_displacement,  scale: "1/(1000*mimic('vps_box_translation'))"}
+  - {interface: drill_lift_screw_rotation/position, signal: TELEM_URC_DEEP_SAMPLE.drill_disp,    scale: "-1/(1000*mimic('drill_platform_translation'))"}
+  - {interface: carousel_rotation/position,         signal: TELEM_URC_ANALYZE.carousel_pos,      scale: "2*pi/12"}
+  - {interface: soil_sampler_rotation/position,     signal: TELEM_URC_ANALYZE.sas_angle,         scale: "pi/180"}
+  - {interface: drill_tool_rotation/velocity,       signal: TELEM_URC_DEEP_SAMPLE.drill_rot_rpm, scale: "2*pi/60"}
+  # ---- URC gpios ----
+  - {interface: vps_control/rpm,        signal: TELEM_URC_ANALYZE.vps_rpm}
+  - {interface: drill_control/vertical_rpm, signal: TELEM_URC_DEEP_SAMPLE.drill_vert_rpm}
+  - {interface: pump_1/running,         signal: TELEM_URC_ANALYZE.pump1_status}
+  - {interface: pump_2/running,         signal: TELEM_URC_ANALYZE.pump2_status}
+  - {interface: solenoid_1/open,        signal: TELEM_URC_ANALYZE.solenoid1}
+  - {interface: solenoid_2/open,        signal: TELEM_URC_ANALYZE.solenoid2}
+  - {interface: ultrasonic_mixer/on,    signal: TELEM_URC_ANALYZE.ultrasonic}
+  - {interface: lid_servo/status,       signal: TELEM_URC_ANALYZE.lid_servo}
+  - {interface: led_405/on,             signal: TELEM_URC_ANALYZE.led_405}
+  - {interface: led_445/on,             signal: TELEM_URC_ANALYZE.led_445}
+  - {interface: plug/state,             signal: TELEM_URC_DEEP_SAMPLE.plug_state}
+  - {interface: photodiode/counts,      signal: TELEM_URC_ANALYZE.photodiode}
+  - {interface: ground_sensor/distance, signal: TELEM_URC_GENERAL.distance_from_ground, scale: 0.001}     # mm -> m
+  - {interface: mission/current,        signal: TELEM_URC_ANALYZE.current_mission}
+  # ---- ERC gpios (NaN while competition=urc) ----
+  - {interface: erc_drill/distance,       signal: TELEM_ERC_DRILL.drill_dist,      scale: 0.001}           # mm -> m
+  - {interface: erc_drill/vertical_rpm,   signal: TELEM_ERC_DRILL.drill_vert_rpm}
+  - {interface: erc_drill/rotation_rpm,   signal: TELEM_ERC_DRILL.drill_rot_rpm}
+  - {interface: erc_drill/mass,           signal: TELEM_ERC_DRILL.load_cell_mass, scale: 0.001}           # g -> kg
+  - {interface: erc_drill/deflector_state, signal: TELEM_ERC_DRILL.deflector_state}
+  - {interface: rock_scale/mass,          signal: TELEM_ERC_ROCK.rock_mass,       scale: 0.0001}          # dg -> kg (ASSUMPTION: dg = decigram)
+  - {interface: soil/mass,                signal: TELEM_ERC_SOIL.soil_mass,       scale: 0.0001}
+  - {interface: soil/temperature,         signal: TELEM_ERC_SOIL.temperature}                              # raw = deg C (ASSUMPTION)
+  - {interface: soil/servo_state,         signal: TELEM_ERC_SOIL.servo_state}
+  - {interface: spool/angle,              signal: TELEM_ERC_SPOOL.spool_angle}
+  - {interface: spool/rpm,                signal: TELEM_ERC_SPOOL.spool_rpm}
+  - {interface: spool/angle_now,          signal: TELEM_ERC_SPOOL_POS.spool_angle_now}
+
+# COMMAND bindings: command interface(s) -> one CAN command message.
+#   values:   signals taken from interfaces (scaled)         constants: fixed raw field values
+#   trigger:  send whenever this (counter) interface changes, instead of on value change
+#   readback: after sending, expect `state` to reach the command within `tolerance`
+#             (ros units) before `timeout_ms`, else resend (max retry_max) then flag a fault
+#   skip_initial_if_at_readback: do not send the very first command if the state already
+#             matches (controllers write "hold current position" on activation)
+command_bindings:
+  - {message: KILL,    trigger: payload_control/kill,  constants: {kill: 1}}
+
+  - {message: VPS_HOME, trigger: vps_control/home, constants: {home: 1}}
+  - message: VPS_MOVE
+    values: {target_displacement: {interface: vps_screw_rotation/position, scale: "1000*mimic('vps_box_translation')"}}
+    readback: {state: vps_screw_rotation/position, tolerance: "0.001/abs(mimic('vps_box_translation'))", timeout_ms: 60000}
+    skip_initial_if_at_readback: true
+  - {message: SAS_HOME, trigger: sas_control/home, constants: {home: 1}}
+  - message: SSS_POSITION
+    values: {target_angle: {interface: soil_sampler_rotation/position, scale: "180/pi"}}
+    readback: {state: soil_sampler_rotation/position, tolerance: 0.02, timeout_ms: 15000}
+    skip_initial_if_at_readback: true
+  - message: URC_PUMP_RUN
+    constants: {selector: 0}
+    values: {power: {interface: pump_1/power, scale: 20000}}          # -1..+1 -> -20000..+20000
+  - message: URC_PUMP_RUN
+    constants: {selector: 1}
+    values: {power: {interface: pump_2/power, scale: 20000}}
+  - message: ULTRASONIC_RUN
+    values: {"on": {interface: ultrasonic_mixer/on}}
+    readback: {state: ultrasonic_mixer/on, tolerance: 0.5, timeout_ms: 2000}
+  - message: CAROUSEL_POSITION
+    values: {cuvette: {interface: carousel_rotation/position, scale: "12/(2*pi)"}}
+    readback: {state: carousel_rotation/position, tolerance: 0.05, timeout_ms: 15000}
+    skip_initial_if_at_readback: true
+  - message: LED_SET
+    constants: {selector: 0}
+    values: {"on": {interface: led_405/on}}
+    readback: {state: led_405/on, tolerance: 0.5, timeout_ms: 2000}
+  - message: LED_SET
+    constants: {selector: 1}
+    values: {"on": {interface: led_445/on}}
+    readback: {state: led_445/on, tolerance: 0.5, timeout_ms: 2000}
+  - message: URC_DSS_DRILL_SET
+    values: {rpm: {interface: drill_tool_rotation/velocity, scale: "60/(2*pi)"}}
+    readback: {state: drill_tool_rotation/velocity, tolerance: 1.5, timeout_ms: 10000}     # ~14 rpm
+  - {message: URC_DSS_HOME, trigger: drill_control/home, constants: {home: 1}}
+  - message: URC_DSS_MOVE
+    values: {target_displacement: {interface: drill_lift_screw_rotation/position, scale: "-1000*mimic('drill_platform_translation')"}}
+    readback: {state: drill_lift_screw_rotation/position, tolerance: "0.001/abs(mimic('drill_platform_translation'))", timeout_ms: 45000}
+    skip_initial_if_at_readback: true
+  - message: URC_DSS_PLUG_SET
+    values: {angle: {interface: plug/angle}}                                              # degrees, no readback in table (only open/closed bit)
+
+  - {message: ERC_DSS_LOAD_CELL_0, trigger: erc_drill/zero_load, constants: {zero: 1}}
+  - message: ERC_DSS_DRILL_SET
+    values: {rpm: {interface: erc_drill/rpm}}
+  - message: ERC_DSS_MOVE
+    values: {target_displacement: {interface: erc_drill/displacement, scale: 1000}}        # m -> mm
+  - message: ERC_DSS_DEFLECTOR_SET
+    values: {angle: {interface: erc_drill/deflector_angle}}
+  - message: ERC_DSS_PLUG_SET
+    values: {angle: {interface: erc_drill/plug_angle}}
+  - {message: ROCK_ZERO_LOAD, trigger: rock_scale/zero, constants: {zero: 1}}
+  - {message: SOIL_ZERO_LOAD, trigger: soil/zero, constants: {zero: 1}}
+  - message: SOIL_SIMPLE_CLOSE
+    trigger: soil/close_trigger
+    values: {revolutions: {interface: soil/close_revolutions}, speed_rpm: {interface: soil/close_speed}}
+  - message: SOIL_JAWS_SET
+    values: {target: {interface: soil/jaws_target}}
+  - {message: SOIL_JAWS_HOME, trigger: soil/jaws_home, constants: {home: 1}}
+  - message: SOIL_HEAT_TO_TARGET
+    values: {target_temp: {interface: soil/heat_target}}
+  - {message: SPOOL_ZERO, trigger: spool/zero, constants: {zero: 1}}
+  - message: ERC_PUMP_RUN
+    values: {power: {interface: erc_pump/power, scale: 20000}}
+  - message: SPOOL_MOVE
+    values: {angle: {interface: spool/move_angle}}
+  - message: SPOOL_ROTATE
+    trigger: spool/rotate_trigger
+    values: {speed_rpm: {interface: spool/rotate_rpm}, duration_ds: {interface: spool/rotate_duration, scale: 10}}   # s -> 0.1 s
+  - message: SET_MISSION
+    values: {mission: {interface: mission/mode}}
+
+# Stop-type commands sent when the hardware interface deactivates (never a position move).
+safe_state_commands:
+  - {message: URC_DSS_DRILL_SET, raw: {rpm: 0}}
+  - {message: ERC_DSS_DRILL_SET, raw: {rpm: 0}}
+  - {message: URC_PUMP_RUN, raw: {selector: 0, power: 0}}
+  - {message: URC_PUMP_RUN, raw: {selector: 1, power: 0}}
+  - {message: ERC_PUMP_RUN, raw: {power: 0}}
+  - {message: ULTRASONIC_RUN, raw: {"on": 0}}
+  - {message: LED_SET, raw: {selector: 0, "on": 0}}
+  - {message: LED_SET, raw: {selector: 1, "on": 0}}
+  - {message: SPOOL_ROTATE, raw: {speed_rpm: 0, duration_ds: 0}}

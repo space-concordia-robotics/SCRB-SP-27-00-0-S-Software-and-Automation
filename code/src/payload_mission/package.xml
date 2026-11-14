@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>payload_mission</name><version>0.2.0</version>
+  <description>URC mission layer for the SCRB science payload</description>
+  <maintainer email="waqar.abbasbaig@spaceconcordia.ca">Waqar Abbas Baig</maintainer><license>Proprietary</license>
+  <depend>rclpy</depend><depend>std_msgs</depend><depend>sensor_msgs</depend><depend>control_msgs</depend>
+  <export><build_type>ament_python</build_type></export>
+</package>

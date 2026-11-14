@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+  payload.urdf.xacro - top-level robot description.
+
+    mechanical URDF (unchanged)  +  ros2_control block  =  what the controller manager loads.
+
+  The mechanical URDF is included untouched so that a new CAD export just replaces the file.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="payload">
+  <xacro:arg name="description_file" default="payload_description.urdf"/>
+  <xacro:arg name="hardware" default="mock"/>               <!-- mock | can -->
+  <xacro:arg name="can_interface" default="vcan0"/>
+  <xacro:arg name="competition" default="urc"/>              <!-- urc | erc -->
+
+  <xacro:include filename="$(arg description_file)"/>
+  <xacro:include filename="payload.ros2_control.xacro"/>
+  <xacro:payload_ros2_control hardware="$(arg hardware)" can_interface="$(arg can_interface)" competition="$(arg competition)"/>
+</robot>

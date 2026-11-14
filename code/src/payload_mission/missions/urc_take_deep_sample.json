@@ -1,0 +1,408 @@
+[
+ {
+  "step_id": "URC-DS-001",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Home VPS",
+  "jetson_function": "VPSHome()",
+  "antithesis_function": null,
+  "reversible": false,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "VPS_HOME",
+  "master_label": "Deep Sample",
+  "phase_label": "Initialization",
+  "tui_feedback": {
+   "lvl0": "Initialization",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {}
+ },
+ {
+  "step_id": "URC-DS-002",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Home drill height; set limit-switch position to zero",
+  "jetson_function": "URCDrillHome()",
+  "antithesis_function": null,
+  "reversible": false,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "URC_DSS_HOME",
+  "master_label": "Deep Sample",
+  "phase_label": "Initialization",
+  "tui_feedback": {
+   "lvl0": "Initialization",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "timeout_s": 20
+  }
+ },
+ {
+  "step_id": "URC-DS-003",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Descend VPS to ground using distance-sensor approach",
+  "jetson_function": "VPSGround()",
+  "antithesis_function": "VPSHome()",
+  "reversible": true,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "VPS_GROUND",
+  "master_label": "Deep Sample",
+  "phase_label": "Descending to ground level",
+  "tui_feedback": {
+   "lvl0": "Descending to ground level",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "step_mm": 5,
+   "contact_mm": 2,
+   "max_travel_mm": 200
+  },
+  "notes": "PLACEHOLDER values; firmware may do this approach itself."
+ },
+ {
+  "step_id": "URC-DS-004",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Turn on drill rotation",
+  "jetson_function": "URCDrillSet()",
+  "antithesis_function": "URCDrillSet()",
+  "reversible": true,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "URC_DSS_DRILL_SET",
+  "master_label": "Deep Sample",
+  "phase_label": "Activating Drill",
+  "tui_feedback": {
+   "lvl0": "Activating Drill",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "on": true,
+   "power": 0.6,
+   "max_rpm": 300.0
+  },
+  "antithesis_params": {
+   "on": false
+  }
+ },
+ {
+  "step_id": "URC-DS-005",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Lower drill to 10 cm below zero",
+  "jetson_function": "URCDrillMove(-100 mm)",
+  "antithesis_function": null,
+  "reversible": false,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "URC_DSS_MOVE",
+  "master_label": "Deep Sample",
+  "phase_label": "Lowering drill to 10cm depth",
+  "tui_feedback": {
+   "lvl0": "Lowering drill to 10cm depth",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "depth_mm": 100,
+   "timeout_s": 30
+  }
+ },
+ {
+  "step_id": "URC-DS-006",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Rest at target depth",
+  "jetson_function": "WaitAtDepth()",
+  "antithesis_function": null,
+  "reversible": false,
+  "mcu_task_type": "N/A",
+  "relevant_boards": [
+   "JETSON"
+  ],
+  "mcu_command": null,
+  "master_label": "Deep Sample",
+  "phase_label": "Resting at target depth",
+  "tui_feedback": {
+   "lvl0": "Resting at target depth",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "seconds": 10
+  },
+  "notes": "PLACEHOLDER duration."
+ },
+ {
+  "step_id": "URC-DS-007",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Raise drill until encoder returns to zero",
+  "jetson_function": "URCDrillMove(0 mm)",
+  "antithesis_function": null,
+  "reversible": false,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "URC_DSS_MOVE",
+  "master_label": "Deep Sample",
+  "phase_label": "Retreiving Sample",
+  "tui_feedback": {
+   "lvl0": "Retreiving Sample",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "depth_mm": 0,
+   "timeout_s": 30
+  }
+ },
+ {
+  "step_id": "URC-DS-008",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Turn off drill rotation",
+  "jetson_function": "URCDrillSet()",
+  "antithesis_function": "URCDrillSet()",
+  "reversible": true,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "URC_DSS_DRILL_SET",
+  "master_label": "Deep Sample",
+  "phase_label": "Retreiving Sample",
+  "tui_feedback": {
+   "lvl0": "Retreiving Sample",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "on": false
+  },
+  "antithesis_params": {
+   "on": true,
+   "power": 0.6
+  }
+ },
+ {
+  "step_id": "URC-DS-009",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Actuate plug/carrier servo",
+  "jetson_function": "URCPlugSet(preset)",
+  "antithesis_function": "URCPlugSet()",
+  "reversible": true,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "URC_DSS_PLUG_SET",
+  "master_label": "Deep Sample",
+  "phase_label": "Sealing Drill",
+  "tui_feedback": {
+   "lvl0": "Sealing Drill",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "preset": 1,
+   "angle_deg": 90.0
+  },
+  "notes": "PLACEHOLDER preset index.",
+  "antithesis_params": {
+   "preset": 0
+  }
+ },
+ {
+  "step_id": "URC-DS-010",
+  "mission": "URC - Take Deep Sample",
+  "physical_action": "Lower drill into plug",
+  "jetson_function": "URCDrillMove(plug_height)",
+  "antithesis_function": "URCDrillHome()",
+  "reversible": true,
+  "mcu_task_type": "Execute",
+  "relevant_boards": [
+   "MAIN"
+  ],
+  "mcu_command": "URC_DSS_MOVE",
+  "master_label": "Deep Sample",
+  "phase_label": "Sealing Drill",
+  "tui_feedback": {
+   "lvl0": "Sealing Drill",
+   "lvl1": [
+    "Displacement",
+    "Drill RPM",
+    "plug Status (On/Off)",
+    "CAN Bus Load"
+   ],
+   "lvl2": [
+    "Motor load (Free RPM vs measured RPM)"
+   ]
+  },
+  "mcu_feedback_states": [
+   "Running",
+   "Complete",
+   "Fault"
+  ],
+  "operator_prompt": null,
+  "skip_voids_antithesis": true,
+  "abortable": true,
+  "status": "NOT_STARTED",
+  "params": {
+   "depth_mm": 20,
+   "timeout_s": 30
+  },
+  "notes": "PLACEHOLDER plug_height."
+ }
+]

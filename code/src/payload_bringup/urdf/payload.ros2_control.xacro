@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="payload_ros2_control" params="hardware:=mock can_interface:=vcan0 competition:=urc">
+    <ros2_control name="payload" type="system">
+
+      <hardware>
+        <xacro:if value="${hardware == 'mock'}">
+          <plugin>mock_components/GenericSystem</plugin>
+          <param name="mock_sensor_commands">false</param>
+          <param name="calculate_dynamics">false</param>
+        </xacro:if>
+        <xacro:if value="${hardware == 'can'}">
+          <plugin>payload_hardware/PayloadCanSystem</plugin>
+          <param name="can_interface">${can_interface}</param>
+          <param name="competition">${competition}</param>
+          <param name="stale_ms">500</param>
+          <param name="rx_timeout_ms">500</param>
+          <param name="retry_max">2</param>
+          <param name="strict_competition">true</param>
+          <param name="safe_state_on_deactivate">true</param>
+          <param name="kill_on_deactivate">false</param>
+        </xacro:if>
+      </hardware>
+
+      <!-- URDF joints in SI units -->
+      <joint name="vps_screw_rotation">             <!-- VPS lead screw; box travel = mimic multiplier x rotation -->
+        <command_interface name="position"/>
+        <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      </joint>
+      <joint name="drill_lift_screw_rotation">      <!-- DSS lift screw; platform travel = mimic multiplier x rotation -->
+        <command_interface name="position"/>
+        <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      </joint>
+      <joint name="carousel_rotation">              <!-- cuvette carousel: index x 2*pi/12 -->
+        <command_interface name="position"/>
+        <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      </joint>
+      <joint name="soil_sampler_rotation">          <!-- surface sampler arm, 0..300 deg -->
+        <command_interface name="position"/>
+        <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      </joint>
+      <joint name="drill_tool_rotation">            <!-- drill spin: rad/s, commanded and reported as rpm on the bus -->
+        <command_interface name="velocity"/>
+        <state_interface name="velocity"><param name="initial_value">0.0</param></state_interface>
+      </joint>
+
+      <!-- URC devices-->   
+      <gpio name="vps_control">
+        <command_interface name="home"/> <!-- counter: +1 fires VPS_HOME -->
+        <state_interface name="rpm"/>
+      </gpio>
+      <gpio name="sas_control"><command_interface name="home"/></gpio>
+      <gpio name="drill_control">
+        <command_interface name="home"/> <!-- counter: +1 fires URC_DSS_HOME -->
+        <state_interface name="vertical_rpm"/>
+      </gpio>
+      <gpio name="pump_1">
+        <command_interface name="power"/> <!-- -1 .. +1, sign = direction -->
+        <state_interface name="running"/>
+      </gpio>
+      <gpio name="pump_2">
+        <command_interface name="power"/>
+        <state_interface name="running"/>
+      </gpio>
+      <gpio name="solenoid_1"><state_interface name="open"/></gpio>        <!-- read only: no command in the CAN table -->
+      <gpio name="solenoid_2"><state_interface name="open"/></gpio>
+      <gpio name="lid_servo"><state_interface name="status"/></gpio>       <!-- read only: no command in the CAN table -->
+      <gpio name="ultrasonic_mixer">
+        <command_interface name="on"/>
+        <state_interface name="on"/>
+      </gpio>
+      <gpio name="led_405">
+        <command_interface name="on"/>
+        <state_interface name="on"/>
+      </gpio>
+      <gpio name="led_445">
+        <command_interface name="on"/>
+        <state_interface name="on"/>
+      </gpio>
+      <gpio name="plug">
+        <command_interface name="angle"/>           <!-- degrees, 0..300 -->
+        <state_interface name="state"/>
+      </gpio>
+      <gpio name="photodiode"><state_interface name="counts"/></gpio>      <!-- raw 16-bit ADC counts -->
+      <gpio name="ground_sensor"><state_interface name="distance"/></gpio> <!-- metres -->
+      <gpio name="mission">
+        <command_interface name="mode"/>            <!-- SET_MISSION, 0..7 -->
+        <state_interface name="current"/>
+      </gpio>
+
+      <!-- ERC devices, read NaN during urc -->
+      <gpio name="erc_drill">
+        <command_interface name="rpm"/>
+        <command_interface name="displacement"/>    <!-- metres -->
+        <command_interface name="deflector_angle"/>
+        <command_interface name="plug_angle"/>
+        <command_interface name="zero_load"/>       <!-- counter -->
+        <state_interface name="distance"/>
+        <state_interface name="vertical_rpm"/>
+        <state_interface name="rotation_rpm"/>
+        <state_interface name="mass"/>              <!-- kg -->
+        <state_interface name="deflector_state"/>
+      </gpio>
+      <gpio name="rock_scale">
+        <command_interface name="zero"/>            <!-- counter -->
+        <state_interface name="mass"/>
+      </gpio>
+      <gpio name="soil">
+        <command_interface name="zero"/>
+        <command_interface name="close_trigger"/>   <!-- counter; revolutions + speed must be set first -->
+        <command_interface name="close_revolutions"/>
+        <command_interface name="close_speed"/>
+        <command_interface name="jaws_target"/>
+        <command_interface name="jaws_home"/>
+        <command_interface name="heat_target"/>     <!-- deg C -->
+        <state_interface name="mass"/>
+        <state_interface name="temperature"/>
+        <state_interface name="servo_state"/>
+      </gpio>
+      <gpio name="spool">
+        <command_interface name="zero"/>
+        <command_interface name="move_angle"/>      <!-- degrees from the current position -->
+        <command_interface name="rotate_trigger"/>  <!-- counter; rpm + duration must be set first -->
+        <command_interface name="rotate_rpm"/>
+        <command_interface name="rotate_duration"/> <!-- seconds, 0.1 s steps; the FIRMWARE times it -->
+        <state_interface name="angle"/>
+        <state_interface name="rpm"/>
+        <state_interface name="angle_now"/>
+      </gpio>
+      <gpio name="erc_pump"><command_interface name="power"/></gpio>
+
+      <!-- Safety and link health -->
+      <gpio name="payload_control">
+        <command_interface name="kill"/>            <!-- counter: +1 sends the table's KILL message -->
+        <command_interface name="clear_faults"/>    <!-- counter: +1 clears latched fault bits -->
+      </gpio>
+      <gpio name="payload_link">
+        <state_interface name="link_ok"><param name="initial_value">1.0</param></state_interface>
+        <state_interface name="rx_age_ms"><param name="initial_value">0.0</param></state_interface>
+        <state_interface name="fault_flags"><param name="initial_value">0.0</param></state_interface>
+        <state_interface name="tx_count"><param name="initial_value">0.0</param></state_interface>
+        <state_interface name="rx_count"><param name="initial_value">0.0</param></state_interface>
+        <state_interface name="rejected_count"><param name="initial_value">0.0</param></state_interface>
+      </gpio>
+
+    </ros2_control>
+  </xacro:macro>
+</robot>

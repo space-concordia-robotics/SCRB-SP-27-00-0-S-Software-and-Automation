@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>payload_hardware</name>
+  <version>0.2.0</version>
+  <description>ros2_control hardware interface for the SCRB science payload.</description>
+  <maintainer email="waqar.abbasbaig@spaceconcordia.ca">Waqar Abbas Baig</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <hardware_interface plugin="${prefix}/payload_hardware.xml"/>
+  </export>
+</package>

@@ -1,0 +1,2 @@
+[console_scripts]
+mission_node_urc = payload_mission.mission_node_urc:main

@@ -1,0 +1,4 @@
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_hardware/lib/libpayload_hardware.so
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_hardware/lib/libpayload_can_core.a
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_hardware/share/payload_hardware/cmake/export_payload_hardwareExport.cmake
+/home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_hardware/share/payload_hardware/cmake/export_payload_hardwareExport-noconfig.cmake

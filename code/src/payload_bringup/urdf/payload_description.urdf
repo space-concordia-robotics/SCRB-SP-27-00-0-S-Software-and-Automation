@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="payload_description">
+  <link name="VPS_static">
+    <inertial>
+      <origin xyz="0.042681720884614 -0.14626705262653 0.13795818061031" rpy="0 0 0" />
+      <mass value="3.857702201249" />
+      <inertia ixx="0.047388272355736" ixy="0.00041823876038498" ixz="-0.0019325774344214" iyy="0.039997583046108" iyz="-0.0006082529947816" izz="0.033372430535109" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_VPS_static.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_VPS_static.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="VPS_leadScrew">
+    <inertial>
+      <origin xyz="0.168496611562 -1.6500030937e-05 3.16524613457e-06" rpy="0 0 0" />
+      <mass value="0.26271234712" />
+      <inertia ixx="6.22199916184e-06" ixy="8.5253682521e-08" ixz="-4.27759983218e-08" iyy="0.002034643757" iyz="5.83260270418e-09" izz="0.0020346309748" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_VPS_leadScrew.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_VPS_leadScrew.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="vps_screw_rotation" type="continuous">
+    <origin xyz="-0.027224 -0.052375 0.02862" rpy="0.036332 0 1.5708" />
+    <parent link="VPS_static" />
+    <child link="VPS_leadScrew" />
+    <axis xyz="1 0 0" />
+    <limit effort="9.1790244" velocity="8.79645943005" />
+  </joint>
+  <joint name="vps_box_translation" type="prismatic">
+    <origin xyz="0.01999999994322 -0.044776007686534 0.15250010512774" rpy="1.5708 3.7747582837255e-15 1.5708" />
+    <parent link="telescopic_frame" />
+    <child link="VPS_static" />
+    <axis xyz="3.673205104887e-06 -0.99999999999295 -1.9584076363766e-15" />
+    <limit lower="-0.005" upper="0.305" effort="9999" velocity="0.00615079365079" />
+    <mimic joint="vps_screw_rotation" multiplier="-0.0006992351524728963" offset="0" />
+  </joint>
+  <link name="telescopic_frame">
+    <inertial>
+      <origin xyz="0.033677847959605 -0.005897712630545 0.00350428048021" rpy="0 0 0" />
+      <mass value="1.1073991852182" />
+      <inertia ixx="0.0078974135383542" ixy="2.2953174444422e-05" ixz="-6.0444423333746e-05" iyy="0.0066407847127804" iyz="0.00026419660977711" izz="0.0017130606989537" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_telescopic_frame_v45.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_telescopic_frame_v45.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="carousel_drum">
+    <inertial>
+      <origin xyz="0.00297056169001 0.00487031636887 -7.85155871095e-05" rpy="0 0 0" />
+      <mass value="0.446284745049" />
+      <inertia ixx="0.000855317124865" ixy="2.71192136977e-05" ixz="-9.17137196092e-06" iyy="0.00132823400033" iyz="3.81183449349e-07" izz="0.000777364103714" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_carousel_drum.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_carousel_drum.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="carousel_rotation" type="continuous">
+    <origin xyz="0.10063487993037 -0.25402277645996 0.14779789088358" rpy="-5.5084526417338e-06 0.84084862734807 -4.1049500605538e-06" />
+    <parent link="VPS_static" />
+    <child link="carousel_drum" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <link name="SSS">
+    <inertial>
+      <origin xyz="0.000305200516081 -3.50489101915e-05 0.0249268987109" rpy="0 0 0" />
+      <mass value="0.116734255602" />
+      <inertia ixx="8.14761916985e-05" ixy="-5.4045056367e-07" ixz="4.22749994386e-06" iyy="7.83451886959e-05" iyz="-3.14114139973e-07" izz="9.84001912317e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_SSS.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_SSS.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="soil_sampler_rotation" type="continuous">
+    <origin xyz="-0.029728702926786 -0.30137899343524 0.27423232671424" rpy="-1.5706694820049 1.5418340123109 -1.5706695351874" />
+    <parent link="VPS_static" />
+    <child link="SSS" />
+    <axis xyz="0 0 1" />
+  </joint>
+  <link name="drill_platform_leadscrew">
+    <inertial>
+      <origin xyz="-2.7194178289e-06 0.105106188981 8.76526015745e-06" rpy="0 0 0" />
+      <mass value="0.155849047955" />
+      <inertia ixx="0.000693044256182" ixy="4.68646382295e-08" ixz="-1.63593579108e-09" iyy="2.24072365998e-06" iyz="1.00718187178e-07" izz="0.000693043420919" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_drill_platform_leadscrew.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 0.949019607843137 0.909803921568627 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_drill_platform_leadscrew.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="drill_lift_screw_rotation" type="continuous">
+    <origin xyz="0.055464888659969 -0.29201062855215 0.041571276339946" rpy="-3.1415889432385 0.14162091055501 -3.1415921298812" />
+    <parent link="VPS_static" />
+    <child link="drill_platform_leadscrew" />
+    <axis xyz="0 1 0" />
+    <limit effort="9.1790244" velocity="8.79645943005" />
+  </joint>
+  <link name="drill_platform_nut_leadscrew">
+    <inertial>
+      <origin xyz="-0.048036441900104 0.21724523359202 0.0064637107903699" rpy="0 0 0" />
+      <mass value="0.343088673209" />
+      <inertia ixx="0.00033979697070776" ixy="7.4590724561367e-05" ixz="5.6491670600563e-05" iyy="0.00040742992144863" iyz="-2.1301187942174e-05" izz="0.00057146162392837" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_drill_platform_nut_leadscrew.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 0.949019607843137 0.909803921568627 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_drill_platform_nut_leadscrew.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="drill_platform_translation" type="prismatic">
+    <origin xyz="0.055464888659992 -0.29201062855215 0.041571276340404" rpy="-3.1415889432434 0.14162091055926 -3.1415921298812" />
+    <parent link="VPS_static" />
+    <child link="drill_platform_nut_leadscrew" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.16" upper="0.02" effort="9999" velocity="0.00466666666667" />
+    <mimic joint="drill_lift_screw_rotation" multiplier="-0.0005305164769729845" offset="0" />
+  </joint>
+  <link name="drill_platform_spinny">
+    <inertial>
+      <origin xyz="-1.0110121025471e-07 1.2741619673665e-05 0.06480726378031" rpy="0 0 0" />
+      <mass value="0.4145060910538" />
+      <inertia ixx="0.0018580329517452" ixy="-3.8564448294458e-08" ixz="-5.3327410966274e-09" iyy="0.0018576688339111" iyz="-5.5131784691792e-07" izz="0.00010524946479633" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_drill_platform_spinny.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://payload_description_v46/meshes/v46_drill_platform_spinny.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="drill_tool_rotation" type="continuous">
+    <origin xyz="-0.041156081516151 0.15195 0.0088981433027304" rpy="1.5707812709751 -1.4795726535877 4.0624232322539e-06" />
+    <parent link="drill_platform_nut_leadscrew" />
+    <child link="drill_platform_spinny" />
+    <axis xyz="0 0 1" />
+  </joint>
+</robot>

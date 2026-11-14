@@ -1,0 +1,26 @@
+running develop
+running egg_info
+creating payload_mission.egg-info
+writing payload_mission.egg-info/PKG-INFO
+writing dependency_links to payload_mission.egg-info/dependency_links.txt
+writing entry points to payload_mission.egg-info/entry_points.txt
+writing requirements to payload_mission.egg-info/requires.txt
+writing top-level names to payload_mission.egg-info/top_level.txt
+writing manifest file 'payload_mission.egg-info/SOURCES.txt'
+reading manifest file 'payload_mission.egg-info/SOURCES.txt'
+writing manifest file 'payload_mission.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/lib/python3.12/site-packages/payload-mission.egg-link (link to .)
+Installing mission_node_urc script to /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/lib/payload_mission
+
+Installed /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission
+running symlink_data
+creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/ament_index
+creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/ament_index/resource_index
+creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/ament_index/resource_index/packages
+symbolically linking /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/resource/payload_mission -> /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/ament_index/resource_index/packages
+symbolically linking /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/package.xml -> /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission
+creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission/missions
+symbolically linking /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/missions/urc_take_deep_sample.json -> /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission/missions
+creating /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission/config
+symbolically linking /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/build/payload_mission/config/payload_description.urdf -> /home/waqar/SCRB-SP-27-00-0-S-Software-and-Automation/install/payload_mission/share/payload_mission/config

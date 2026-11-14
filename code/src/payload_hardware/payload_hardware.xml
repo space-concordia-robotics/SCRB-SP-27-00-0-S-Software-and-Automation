@@ -1,0 +1,7 @@
+<library path="payload_hardware">
+  <class name="payload_hardware/PayloadCanSystem"
+         type="payload_hardware::PayloadCanSystem"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>ros2_control system interface for the science payload (CAN bus, driven by CAN_Table.xlsx).</description>
+  </class>
+</library>

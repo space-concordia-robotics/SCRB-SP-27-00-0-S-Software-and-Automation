@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/test_core.dir/test/test_core.cpp.o -o test_core  libpayload_can_core.a 
